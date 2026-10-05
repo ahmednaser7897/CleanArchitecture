@@ -8,7 +8,7 @@ public abstract class BaseSpecifications<TEntity, TKey>
 where TEntity : class, IEntity<TKey>
 {
 
-    BaseSpecifications()
+    protected BaseSpecifications()
     {
         //default spec = get all entities
         Criteria = _ => true;
