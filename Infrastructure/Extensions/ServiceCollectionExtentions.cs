@@ -1,9 +1,12 @@
 using Infrastructure.Contexts;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Domain.Interfaces.UnitOfWork;
 using Infrastructure.UnitOfWork;
+using Application.UseCases.Courses.Commands;
+using Serilog;
 
 namespace Infrastructure.Extensions;
 
@@ -32,6 +35,27 @@ public static class ServiceCollectionExtentions
     public static void AddUnitOfWork(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, BaseUnitOfWork>();
+    }
+    public static void AddMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCourseCommand).Assembly));
+    }
+    public static void AddSerilogConfiguration(this ConfigureHostBuilder hostBuilder)
+    {
+        //Add this package Serilog.AspNetCore
+        //Add this lins on the Program.cs to use the serilog configuration
+        //builder.Host.AddSerilogConfiguration();
+        //app.UseSerilogRequestLogging();
+        //now we can change this based on requirements from appsettings.Development.json and appsettings.Production.json
+        hostBuilder.UseSerilog(
+          (context, configuration)
+          => configuration.ReadFrom.Configuration(context.Configuration)
+      //   .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+      //   .WriteTo.File("logs/{Date}.txt", rollingInterval: RollingInterval.Day)
+      //   .WriteTo.Console(
+      //       outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+      //   )
+      );
     }
 
 }

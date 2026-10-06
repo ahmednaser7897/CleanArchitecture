@@ -1,5 +1,6 @@
 
 using Infrastructure.Extensions;
+using Serilog;
 
 namespace Presentation;
 
@@ -17,7 +18,9 @@ public static class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddAppDbContext(builder.Configuration);
         builder.Services.AddUnitOfWork();
+        builder.Services.AddMediatR();
         builder.Services.AddAppCors();
+        builder.Host.AddSerilogConfiguration();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -35,6 +38,8 @@ public static class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.UseSerilogRequestLogging();
 
         app.Run();
     }

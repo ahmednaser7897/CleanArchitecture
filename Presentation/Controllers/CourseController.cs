@@ -1,72 +1,56 @@
 using Application.DTOs.Courses;
+using Application.UseCases.Courses.Commands;
+using Application.UseCases.Courses.Queries;
 using Domain.Entities;
 using Domain.Interfaces.Specification;
 using Domain.Interfaces.UnitOfWork;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CourseController(IUnitOfWork UnitOfWork) : ControllerBase
+public class CourseController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var courses = (await UnitOfWork.Courses.GetAllWithSpec(new GetCourseSpec()))
-                      .Select(c => CourseDto.FromEntit(c));
+        var courses = await Mediator.Send(new GetAllCoursesQuery());
         return Ok(courses);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var course = await UnitOfWork.Courses.GetByIdWithSpec(new GetCourseSpec(), id);
+        var course = await Mediator.Send(new GetCourseByIdQuery(id));
         if (course == null)
         {
             return NotFound();
         }
-        return Ok(CourseDto.FromEntit(course));
+        return Ok(course);
     }
     [HttpPost]
-    public async Task<IActionResult> Post(AddCourseDto courseDto)
+    public async Task<IActionResult> Post(CourseDto courseDto)
     {
-        var course = new Course
-        {
-            Name = courseDto.Name,
-            Price = courseDto.Price,
-        };
-        await UnitOfWork.Courses.Add(course);
-        return Ok(CourseDto.FromEntit(course));
+        var result = await Mediator.Send(new CreateCourseCommand() { CourseDto = courseDto });
+        if (!result) return BadRequest();
+        return Ok("Created successfully");
     }
-    [HttpPut]
-    public async Task<IActionResult> Put(UpdateCourseDto courseDto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put([FromRoute] int id, [FromBody] CourseDto courseDto)
     {
-        var course = await UnitOfWork.Courses.GetById(courseDto.Id);
-        if (course == null)
-        {
-            return NotFound();
-        }
-        course.Name = courseDto.Name;
-        course.Price = courseDto.Price;
-        await UnitOfWork.Courses.Update(course);
-        return Ok(CourseDto.FromEntit(course));
+        var result = await Mediator.Send(new UpdateCourseCommand() { CourseDto = courseDto, Id = id });
+        if (!result) return NotFound("The Course is not found or faild to update");
+        return Ok("Updated successfully");
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(int id)
     {
-        var result = await UnitOfWork.Courses.Remove(id);
+        var result = await Mediator.Send(new DeleteCourseCommand() { Id = id });
         if (!result)
         {
-            return NotFound();
+            return NotFound("The Course is not found or faild to update");
         }
-        return Ok();
+        return Ok("Deleted successfully");
     }
 }
-public class GetCourseSpec : BaseSpecifications<Course, int>
-{
-    public GetCourseSpec() : base()
-    {
-        AddInclude(c => c.Sections);
-    }
-}
-
