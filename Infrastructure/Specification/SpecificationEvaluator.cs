@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Interfaces.Specification;
+using Domain.Specification;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Specification;

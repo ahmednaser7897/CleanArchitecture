@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Domain.Interfaces.Specification;
+namespace Domain.Specification;
 
 public class OrderExpression<TEntity>
 {

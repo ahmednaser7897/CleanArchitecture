@@ -1,5 +1,7 @@
 
 using Infrastructure.Extensions;
+using Presentation.Filters;
+using Presentation.Middlewares;
 using Serilog;
 
 namespace Presentation;
@@ -12,7 +14,9 @@ public static class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => options.Filters.Add<ValidateModelAttribute>())
+        .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         builder.Services.AddSwaggerGen();
@@ -30,6 +34,7 @@ public static class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseMiddleware<GlobalExceptionHandling>();
 
         app.UseCors("AllowAll");
 

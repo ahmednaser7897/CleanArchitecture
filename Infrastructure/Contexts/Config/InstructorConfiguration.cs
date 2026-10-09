@@ -20,9 +20,8 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         builder.HasOne(x => x.Office)
         .WithOne(x => x.Instructor)
         .HasForeignKey<Instructor>(x => x.OfficeId)
+        //Instructor must have an office (Required)
         .IsRequired();
-
-
 
         builder.ToTable("Instructors");
     }

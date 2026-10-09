@@ -22,13 +22,14 @@ where TEntity : class, IEntity<TKey>
 
     public async Task<List<TEntity>> GetAll()
     {
-        var value = await _context.Set<TEntity>().ToListAsync();
+        var value = await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         return value;
     }
 
     public async Task<TEntity?> GetById(TKey id)
     {
-        return await _context.Set<TEntity>().FindAsync(id);
+        var value = await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id.Equals(id));
+        return value;
     }
 
     public async Task<bool> Remove(TKey id)
@@ -47,6 +48,11 @@ where TEntity : class, IEntity<TKey>
         _context.Set<TEntity>().Update(model);
         return true;
     }
+    public async Task<int> Count()
+    {
+        var value = await _context.Set<TEntity>().AsNoTracking().CountAsync();
+        return value;
+    }
 
     //=======================================================
 
@@ -62,12 +68,18 @@ where TEntity : class, IEntity<TKey>
 
     }
 
-
     public async Task<TEntity?> GetByIdWithSpec(
         ISpecification<TEntity, TKey> spec,
         TKey id)
     {
-        return (await GetAllWithSpec(spec)).FirstOrDefault(x => (x.Id).Equals(id));
+        return (await GetAllWithSpec(spec)).FirstOrDefault(x => x.Id.Equals(id));
+    }
+
+    public async Task<int> CountWithSpec(ISpecification<TEntity, TKey> spec)
+    {
+        var value = (await GetAllWithSpec(spec)).Count;
+        System.Console.WriteLine($"Count With Specification is {value}");
+        return value;
     }
     //=======================================================
     public async Task<bool> SaveChangesAsync()

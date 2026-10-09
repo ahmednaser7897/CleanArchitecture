@@ -12,13 +12,12 @@ public interface IBaseRepository<TEntity, TKey> where TEntity : IEntity<TKey>
     Task<bool> Add(TEntity model);
     Task<bool> Update(TEntity model);
     Task<bool> Remove(TKey id);
+    Task<int> Count();
     //---------------------------------------------
     //Basic Repository operations Async with use specification pattern
     Task<TEntity?> GetByIdWithSpec(ISpecification<TEntity, TKey> spec, TKey id);
     Task<List<TEntity>> GetAllWithSpec(ISpecification<TEntity, TKey> spec);
-    //Task<bool> AddWithSpec(ISpecification<TEntity, TKey> spec, TEntity model);
-    //Task<bool> UpdateWithSpec(ISpecification<TEntity, TKey> spec, TEntity model);
-    //Task<bool> RemoveWithSpec(ISpecification<TEntity, TKey> spec, TKey id);
+    Task<int> CountWithSpec(ISpecification<TEntity, TKey> Spec);
     //---------------------------------------------
     Task<bool> SaveChangesAsync();
     //---------------------------------------------

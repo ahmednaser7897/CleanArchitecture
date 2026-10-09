@@ -26,23 +26,25 @@ VALUES
 /* =========================================
    3. SCHEDULES
    ========================================= */
-
-INSERT INTO Schedules (Title, SUN, MON, TUE, WED, THU, FRI, SAT)
+/*
+INSERT INTO Schedules
+    (Title, SUN, MON, TUE, WED, THU, FRI, SAT)
 VALUES
-('Sunday - Tuesday', 1, 0, 1, 0, 0, 0, 0),
-('Monday - Wednesday', 0, 1, 0, 1, 0, 0, 0),
-('Saturday - Thursday', 0, 1, 1, 1, 1, 0, 1);
-
+('Sunday - Tuesday',      1, 0, 1, 0, 0, 0, 0),
+('Monday - Wednesday',    0, 1, 0, 1, 0, 0, 0),
+('Saturday - Thursday',   0, 1, 1, 1, 1, 0, 1);
+*/
 
 /* =========================================
    4. INSTRUCTORS
    ========================================= */
 
+-- Don't set OfficeId yet because Offices don't exist yet.
 INSERT INTO Instructors (Name, OfficeId)
 VALUES
-('Ahmed Nasser', 0),
-('Mohamed Ali', 1),
-('Omar Hassan', 2);
+('Ahmed Nasser', NULL),
+('Mohamed Ali', NULL),
+('Omar Hassan', NULL);
 
 
 /* =========================================
@@ -57,30 +59,53 @@ VALUES
 
 
 /* =========================================
-   6. SECTIONS
+   6. UPDATE INSTRUCTORS
    ========================================= */
 
-INSERT INTO Sections (Name, CourseId, InstructorId, ScheduleId, StartTime, EndTime)
-VALUES
-('C# Morning', 0, 4, 1, '09:00', '11:00'),
-('ASP.NET Core', 1, 5, 2, '10:00', '12:00'),
-('EF Core', 2,6, 3, '12:00', '14:00'),
-('SQL Server', 3, 6, 4, '14:00', '16:00');
+UPDATE Instructors
+SET OfficeId = 1
+WHERE Id = 1;
+
+UPDATE Instructors
+SET OfficeId = 2
+WHERE Id = 2;
+
+UPDATE Instructors
+SET OfficeId = 3
+WHERE Id = 3;
 
 
 /* =========================================
-   7. ENROLLMENTS
+   7. SECTIONS
+   ========================================= */
+
+INSERT INTO Sections
+    (Name, CourseId, InstructorId, ScheduleId, StartTime, EndTime)
+VALUES
+('C# Morning', 1, 1, 1, '09:00', '11:00'),
+('ASP.NET Core', 2, 2, 2, '10:00', '12:00'),
+('EF Core', 3, NULL, 3, '12:00', '14:00'),
+('SQL Server', 4, 3, 1, '14:00', '16:00');
+
+
+/* =========================================
+   8. ENROLLMENTS
    ========================================= */
 
 INSERT INTO Enrollments (SectionId, StudentId)
 VALUES
-(9, 0),
-(11, 0),
-(12, 0),
-(10, 1),
-(11, 1),
-(12, 2),
-(9, 2),
-(10, 3),
-(12, 4),
-(11, 4);
+(1, 1),
+(3, 1),
+(4, 1),
+
+(2, 2),
+(3, 2),
+
+(4, 3),
+(1, 3),
+
+(2, 4),
+
+(4, 5),
+
+(3, 5);

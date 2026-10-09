@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
+using Domain.AppConstants;
 using Domain.Entities;
-
-namespace Domain.Interfaces.Specification;
+using Domain.Interfaces.Specification;
+using Domain.Specification;
+namespace Domain.Specification;
 
 public abstract class BaseSpecifications<TEntity, TKey>
 : ISpecification<TEntity, TKey>
@@ -37,11 +39,19 @@ where TEntity : class, IEntity<TKey>
     public int? Take { get; private set; }
     public int? Skip { get; private set; }
     public bool IsPaginationEnabled { get; private set; }
-    public void AddPagination(int PageSize, int PageNumber)// Pagesize=10,PageNumber=3 ==> Skip=20,Take=10
+    public void AddPagination(int? PageNumber, int? PageSize)// Pagesize=10,PageNumber=3 ==> Skip=20,Take=10
     {
-        Skip = PageSize * (PageNumber - 1);
-        Take = PageSize;
-        IsPaginationEnabled = true;
+        if (PageSize == null || PageSize <= 0)
+        {
+            PageSize = MyAppConstants.PaginationPageSize;
+        }
+        if (PageNumber != null && PageNumber > 0)
+        {
+            Skip = PageSize * (PageNumber - 1);
+            Take = PageSize;
+            IsPaginationEnabled = true;
+        }
+
     }
 
 }
