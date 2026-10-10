@@ -1,10 +1,10 @@
-using System.Net;
 using Application.DTOs.Courses;
 using Application.DTOs.Response;
 using Domain.Exceptions;
 using Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Domain.Entities;
 
 namespace Application.UseCases.Courses.Queries;
 
@@ -16,12 +16,12 @@ public class GetCourseByIdQueryHandler(IUnitOfWork UnitOfWork, ILogger<GetCourse
 {
     public async Task<BaseApiResponse<CourseDto?>> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Getting course with id {id}", request.Id);
-        var course = await UnitOfWork.Courses.GetById(request.Id)
-        ?? throw new NotFoundException("Course", request.Id);
+        Logger.LogInformation("Getting {Course} with Id {Id}", nameof(Course), request.Id);
+        var model = await UnitOfWork.Courses.GetById(request.Id)
+        ?? throw new NotFoundException(nameof(Course), request.Id);
         return BaseApiResponse<CourseDto?>.Success(
-            data: CourseDto.FromEntit(course),
-            message: "Course found successfully"
+            data: CourseDto.FromEntit(model),
+            message: $"{nameof(Course)} Found Successfully"
         );
     }
 }

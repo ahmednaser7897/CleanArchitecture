@@ -28,15 +28,15 @@ public class CourseController(IMediator Mediator) : ControllerBase
         return Ok(response);
     }
     [HttpPost]
-    public async Task<IActionResult> Post(CourseDto courseDto)
+    public async Task<IActionResult> Post(CourseDto dto)
     {
-        var result = await Mediator.Send(new CreateCourseCommand() { CourseDto = courseDto });
+        var result = await Mediator.Send(new CreateCourseCommand() { Dto = dto });
         return Ok(result);
     }
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put([FromRoute] int id, [FromBody] CourseDto courseDto)
+    public async Task<IActionResult> Put([FromRoute] int id, [FromBody] CourseDto dto)
     {
-        var result = await Mediator.Send(new UpdateCourseCommand() { CourseDto = courseDto, Id = id });
+        var result = await Mediator.Send(new UpdateCourseCommand() { Dto = dto, Id = id });
         return Ok(result);
     }
     [HttpDelete("{id}")]

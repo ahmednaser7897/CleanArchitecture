@@ -1,4 +1,5 @@
 using Application.DTOs.Response;
+using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces.UnitOfWork;
 using MediatR;
@@ -14,9 +15,12 @@ public class DeleteCourseCommandHandler(IUnitOfWork UnitOfWork, ILogger<DeleteCo
 {
     public async Task<BaseApiResponse<bool>> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Deleting course with id {id}", request.Id);
-        await UnitOfWork.Courses.Remove(request.Id);
+        Logger.LogInformation("Deleting {Course} With Id {Id}", nameof(Course), request.Id);
+        var model = await UnitOfWork.Courses.GetById(request.Id);
+        if (model == null)
+            throw new NotFoundException(nameof(Course), request.Id);
+        await UnitOfWork.Courses.Remove(model.Id);
         var state = await UnitOfWork.Complete();
-        return state > 0 ? BaseApiResponse<bool>.Success(true, "Course deleted successfully") : throw new NotFoundException("Course", request.Id);
+        return state > 0 ? BaseApiResponse<bool>.Success(true, $"{nameof(Course)} deleted successfully") : BaseApiResponse<bool>.Fail("Failed to delete course");
     }
 }

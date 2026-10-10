@@ -1,6 +1,7 @@
 using Application.DTOs.Courses;
 using Application.DTOs.Response;
 using Domain.AppConstants;
+using Domain.Entities;
 using Domain.Interfaces.UnitOfWork;
 using Domain.Specification.Courses;
 using Domain.Specification.Params;
@@ -18,11 +19,11 @@ public class GetAllCoursesQueryHandler(IUnitOfWork UnitOfWork, ILogger<GetAllCou
 {
     public async Task<BaseApiResponse<List<CourseDto>>> Handle(GetAllCoursesQuery request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Getting all courses");
-        //Get all courses with pagination and filter
-        var courses = (await UnitOfWork.Courses.GetAllWithSpec(new GetCourseSpec(request.PaginationParams)))
+        Logger.LogInformation("Getting All {Course}s With Pagination", nameof(Course));
+        //Get all Data with pagination and filter
+        var models = (await UnitOfWork.Courses.GetAllWithSpec(new GetCourseSpec(request.PaginationParams)))
                       .ConvertAll(c => CourseDto.FromEntit(c));
-        //Get count of all courses with same filter (without pagination)
+        //Get count of all Data with same filter (without pagination)
         var count = await UnitOfWork.Courses.CountWithSpec(
             new GetCourseSpec(new PaginationParams
             {
@@ -40,7 +41,7 @@ public class GetAllCoursesQueryHandler(IUnitOfWork UnitOfWork, ILogger<GetAllCou
                 pageSize: request.PaginationParams.PageSize ?? MyAppConstants.PaginationPageSize,
                 totalCount: count);
         }
-        return BaseApiResponse<List<CourseDto>>.Success(data: courses, pagination: pagination);
+        return BaseApiResponse<List<CourseDto>>.Success(data: models, pagination: pagination);
     }
 }
 
