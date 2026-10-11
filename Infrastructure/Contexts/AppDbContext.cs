@@ -1,9 +1,10 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Contexts;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<ApplicationUser>//DbContext
 {
     public DbSet<Course> Courses { get; set; }
     public DbSet<Instructor> Instructors { get; set; }

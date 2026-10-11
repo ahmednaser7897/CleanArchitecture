@@ -1,4 +1,5 @@
 
+using Domain.Entities;
 using Infrastructure.Extensions;
 using Presentation.Filters;
 using Presentation.Middlewares;
@@ -19,7 +20,7 @@ public static class Program
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerWithNoAuth();
         builder.Services.AddAppDbContext(builder.Configuration);
         builder.Services.AddUnitOfWork();
         builder.Services.AddMediatR();
@@ -35,6 +36,8 @@ public static class Program
             app.UseSwaggerUI();
         }
         app.UseMiddleware<GlobalExceptionHandling>();
+
+        app.MapIdentityApi<ApplicationUser>();
 
         app.UseCors("AllowAll");
 

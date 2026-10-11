@@ -1,5 +1,6 @@
 using Infrastructure.Contexts;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,8 +8,10 @@ using Domain.Interfaces.UnitOfWork;
 using Infrastructure.UnitOfWork;
 using Application.UseCases.Courses.Commands;
 using Serilog;
+using Domain.Entities;
 
 namespace Infrastructure.Extensions;
+
 
 public static class ServiceCollectionExtentions
 {
@@ -17,6 +20,21 @@ public static class ServiceCollectionExtentions
         services.AddDbContext<AppDbContext>(
                   options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
               );
+    }
+    public static void AddAppIdentity(this IServiceCollection services)
+    {
+        //For Authentication
+        services.AddIdentity<ApplicationUser, IdentityRole>(
+        options =>
+        {
+            //options.Password
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequiredLength = 6;
+            options.Password.RequireNonAlphanumeric = true;
+        }
+        ).AddEntityFrameworkStores<AppDbContext>();
     }
     public static void AddAppCors(this IServiceCollection services)
     {
@@ -57,5 +75,4 @@ public static class ServiceCollectionExtentions
       //   )
       );
     }
-
 }
