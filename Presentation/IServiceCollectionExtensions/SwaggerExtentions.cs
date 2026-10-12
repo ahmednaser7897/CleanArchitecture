@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 
-namespace Infrastructure.Extensions;
+namespace Presentation.IServiceCollectionExtensions;
 /*
 Add this to on of the Swagger methods in Program.cs
 builder.Services.AddSwaggerWithNoAuth();

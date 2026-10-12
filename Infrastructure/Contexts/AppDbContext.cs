@@ -15,6 +15,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>//DbContext
     public DbSet<Enrollment> Enrollments { get; set; }
     public AppDbContext() : base()
     {
+        ApplicationUser user = new();
+
+
+
     }
     public AppDbContext(DbContextOptions options) : base(options)
     {
