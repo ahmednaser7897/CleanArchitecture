@@ -4,6 +4,7 @@ using Application.Services;
 using Application.UseCases.Courses.Commands;
 using Domain.Interfaces.UnitOfWork;
 using Infrastructure.Contexts;
+using Infrastructure.ExternalServices;
 using Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Filters;
@@ -100,6 +101,8 @@ public static class ServiceCollectionExtentions
         //AddTransient() => create new object for the service for each request 
         //for Repositories
         // builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUnitOfWork, BaseUnitOfWork>();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCourseCommand).Assembly));

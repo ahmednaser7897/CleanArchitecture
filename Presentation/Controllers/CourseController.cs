@@ -1,10 +1,6 @@
 using Application.DTOs.Courses;
-using Application.DTOs.Response;
 using Application.UseCases.Courses.Commands;
 using Application.UseCases.Courses.Queries;
-using Domain.Entities;
-using Domain.Interfaces.Specification;
-using Domain.Interfaces.UnitOfWork;
 using Domain.Specification.Params;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

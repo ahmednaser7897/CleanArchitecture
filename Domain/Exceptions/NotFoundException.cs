@@ -1,10 +1,9 @@
 namespace Domain.Exceptions;
 
 
-public class NotFoundException(string resourceName, object id, string? message = null)
-: Exception(message ?? $"The resource {resourceName} with id {id} was not found.")
+public class NotFoundException : Exception
 {
-    public String ResourceName { get; set; } = resourceName;
-    public object Id { get; set; } = id;
-
+    public NotFoundException(string resourceName, object id) : base($"The resource {resourceName ?? "Resource"} with id {id ?? ""} was not found.")
+    { }
+    public NotFoundException(string message) : base(message) { }
 }

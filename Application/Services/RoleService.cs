@@ -28,9 +28,7 @@ public class RoleService(RoleManager<IdentityRole> roleManager) : IRoleService
 
     public async Task<bool> DeleteRole(string id)
     {
-        var role = await roleManager.FindByIdAsync(id);
-        if (role == null)
-            throw new CusttomExption("Role not found");
+        var role = await roleManager.FindByIdAsync(id) ?? throw new CusttomExption("Role not found");
         var result = await roleManager.DeleteAsync(role);
         if (!result.Succeeded)
         {
@@ -42,9 +40,7 @@ public class RoleService(RoleManager<IdentityRole> roleManager) : IRoleService
 
     public async Task<RoleDto> GetRoleById(string id)
     {
-        var role = await roleManager.FindByIdAsync(id);
-        if (role == null)
-            throw new CusttomExption("Role not found");
+        var role = await roleManager.FindByIdAsync(id) ?? throw new CusttomExption("Role not found");
         return new RoleDto() { Id = role.Id, Name = role.Name! };
     }
 
@@ -56,9 +52,7 @@ public class RoleService(RoleManager<IdentityRole> roleManager) : IRoleService
 
     public async Task<bool> UpdateRole(string id, string role)
     {
-        var roleEntity = await roleManager.FindByIdAsync(id);
-        if (roleEntity == null)
-            throw new CusttomExption("Role not found");
+        var roleEntity = await roleManager.FindByIdAsync(id) ?? throw new CusttomExption("Role not found");
         roleEntity.Name = role;
         roleEntity.NormalizedName = role.ToUpper();
         var result = await roleManager.UpdateAsync(roleEntity);
