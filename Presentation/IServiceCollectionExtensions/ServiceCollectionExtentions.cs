@@ -1,4 +1,6 @@
 using Application.DTOs.Options;
+using Application.InterfacesServices;
+using Application.Services;
 using Application.UseCases.Courses.Commands;
 using Domain.Interfaces.UnitOfWork;
 using Infrastructure.Contexts;
@@ -98,6 +100,7 @@ public static class ServiceCollectionExtentions
         //AddTransient() => create new object for the service for each request 
         //for Repositories
         // builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUnitOfWork, BaseUnitOfWork>();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateCourseCommand).Assembly));
     }

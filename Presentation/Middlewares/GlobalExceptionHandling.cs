@@ -36,6 +36,11 @@ public class GlobalExceptionHandling(RequestDelegate next, ILogger<GlobalExcepti
             context.Response.StatusCode = StatusCodes.Status200OK;
             CustomResponseStatusCode = StatusCodes.Status404NotFound;
         }
+        else if (ex is CusttomExption custom)
+        {
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            CustomResponseStatusCode = custom.StatusCode;
+        }
         object response = _env.IsDevelopment()
         ?
         new DevelopmentExceptionResponse

@@ -67,6 +67,4 @@ public static class JWTExtentions
               }
           );
     }
-
-
 }
