@@ -3,13 +3,13 @@ using Application.InterfacesServices;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Account.Commands;
+namespace Application.UseCases.Roles.Commands;
 
 public class CreateRoleCommand : IRequest<BaseApiResponse<bool>>
 {
     public required string Name { get; set; }
 }
-public class CreateRoleCommandHandler(IRoleRepository Repository, ILogger<CreateRoleCommandHandler> Logger) : IRequestHandler<CreateRoleCommand, BaseApiResponse<bool>>
+public class CreateRoleCommandHandler(IRoleService Repository, ILogger<CreateRoleCommandHandler> Logger) : IRequestHandler<CreateRoleCommand, BaseApiResponse<bool>>
 {
     public async Task<BaseApiResponse<bool>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {

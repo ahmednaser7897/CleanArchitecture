@@ -2,7 +2,7 @@ using Application.DTOs.Accounts;
 
 namespace Application.InterfacesServices;
 
-public interface IRoleRepository
+public interface IRoleService
 {
     Task<bool> AddRole(string role);
     Task<List<RoleDto>> GetRoles();

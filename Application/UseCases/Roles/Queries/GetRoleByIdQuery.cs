@@ -4,14 +4,14 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Application.DTOs.Accounts;
 
-namespace Application.UseCases.Account.Queries;
+namespace Application.UseCases.Roles.Queries;
 
 public class GetRoleByIdQuery(string id) : IRequest<BaseApiResponse<RoleDto>>
 {
     public string Id { get; set; } = id;
 }
 
-public class GetRoleByIdQueryHandler(IRoleRepository Repository, ILogger<GetRoleByIdQueryHandler> Logger) : IRequestHandler<GetRoleByIdQuery, BaseApiResponse<RoleDto>>
+public class GetRoleByIdQueryHandler(IRoleService Repository, ILogger<GetRoleByIdQueryHandler> Logger) : IRequestHandler<GetRoleByIdQuery, BaseApiResponse<RoleDto>>
 {
     public async Task<BaseApiResponse<RoleDto>> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
     {

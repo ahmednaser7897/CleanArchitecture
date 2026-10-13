@@ -1,8 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Application.UseCases.Account.Queries;
-using Application.UseCases.Account.Commands;
-
+using Application.UseCases.Roles.Queries;
+using Application.UseCases.Roles.Commands;
 
 namespace Presentation.Controllers;
 

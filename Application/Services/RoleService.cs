@@ -6,7 +6,7 @@ using Application.DTOs.Accounts;
 
 namespace Application.Services;
 
-public class RoleRepository(RoleManager<IdentityRole> roleManager) : IRoleRepository
+public class RoleService(RoleManager<IdentityRole> roleManager) : IRoleService
 {
     public async Task<bool> AddRole(string role)
     {

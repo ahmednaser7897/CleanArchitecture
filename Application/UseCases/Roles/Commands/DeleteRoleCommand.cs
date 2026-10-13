@@ -3,13 +3,13 @@ using Application.InterfacesServices;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Account.Commands;
+namespace Application.UseCases.Roles.Commands;
 
 public class DeleteRoleCommand : IRequest<BaseApiResponse<bool>>
 {
     public required string Id { get; set; }
 }
-public class DeleteRoleCommandHandler(IRoleRepository Repository, ILogger<DeleteRoleCommandHandler> Logger) : IRequestHandler<DeleteRoleCommand, BaseApiResponse<bool>>
+public class DeleteRoleCommandHandler(IRoleService Repository, ILogger<DeleteRoleCommandHandler> Logger) : IRequestHandler<DeleteRoleCommand, BaseApiResponse<bool>>
 {
     public async Task<BaseApiResponse<bool>> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
