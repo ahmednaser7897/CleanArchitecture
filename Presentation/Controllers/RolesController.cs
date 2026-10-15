@@ -2,12 +2,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.UseCases.Roles.Queries;
 using Application.UseCases.Roles.Commands;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Seeders;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = UserRoles.Admin)]
+[Authorize(Roles = UserRoles.Admin)]
 public class RolesController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]

@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Abstraction;
+
+namespace Domain.Entities;
 // Student and section has many to many relationship
 // because one student can enroll in many sections
 // and one section can have many students

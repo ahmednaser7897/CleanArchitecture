@@ -5,6 +5,7 @@ using Application.UseCases.Courses.Commands;
 using Domain.Interfaces.UnitOfWork;
 using Infrastructure.Contexts;
 using Infrastructure.ExternalServices;
+using Infrastructure.Interceptors;
 using Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Filters;
@@ -14,7 +15,7 @@ namespace Presentation.IServiceCollectionExtensions;
 
 public static class ServiceCollectionExtentions
 {
-    public static void AddAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+    public static void AddAppDependencyInjection(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
     {
         // Add services to the container (Inversion of Control).
         //see: DotnetAPIIdentityAuthentication/DependencyInjection.cs
@@ -29,7 +30,9 @@ public static class ServiceCollectionExtentions
         services.AddAppIdentity();
         services.AddAppCors();
         services.AddAppCustomServises();
-        services.AddJWTAuthentication(configuration);
+        services.AddScoped<AppInterceptor>();
+        services.AddJWTAuthentication(configuration, env);
+
     }
     private static void AddAppConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
@@ -70,8 +73,10 @@ public static class ServiceCollectionExtentions
         //for entity framework (DbContext)
         //add DbContext to the container
         services.AddDbContext<AppDbContext>(
-            options => options.UseSqlServer(configuration.GetConnectionString(MyAppConstants.DefaultConnection))
-        );
+            (sp, options) => options.UseSqlServer(configuration.GetConnectionString(MyAppConstants.DefaultConnection))
+            .AddInterceptors(
+                sp.GetRequiredService<AppInterceptor>()
+            ));
     }
     private static void AddAppCors(this IServiceCollection services)
     {

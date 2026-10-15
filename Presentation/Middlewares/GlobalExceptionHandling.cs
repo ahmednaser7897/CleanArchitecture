@@ -62,14 +62,12 @@ public class GlobalExceptionHandling(RequestDelegate next, ILogger<GlobalExcepti
             Path = context.Request.Path,
         };
 
-
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
-
-        var json = JsonSerializer.Serialize(response, options);
+        var json = JsonSerializer.Serialize(response, jsonOptions);
         await context.Response.WriteAsync(json);
     }
+    public static readonly JsonSerializerOptions jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true
+    };
 }

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Domain.Abstraction;
 using Domain.AppConstants;
 using Domain.Entities;
 using Domain.Interfaces.Specification;

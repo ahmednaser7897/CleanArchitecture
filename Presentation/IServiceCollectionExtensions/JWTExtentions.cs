@@ -1,9 +1,12 @@
 using Application.DTOs.Options;
+using Application.DTOs.Response;
 using Domain.AppConstants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Presentation.Middlewares;
+using System.Text.Json;
 using System.Text;
 
 
@@ -21,7 +24,8 @@ Add this to appsettings.Development.json or appsettings.Production.json if it do
 */
 public static class JWTExtentions
 {
-    public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
+
+    public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
     {
         var jwtOptions = configuration.GetSection(MyAppConstants.JwtConfigSectionName).Get<JwtOptions>();
         //for JWT Authentication 
@@ -64,7 +68,67 @@ public static class JWTExtentions
                       //this option is used to set the issuer signing key
                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
                   };
+                  // Keep your existing TokenValidationParameters here.
+                  options.Events = new JwtBearerEvents
+                  {
+                      OnChallenge = async context =>
+                      {
+                          // Prevent the default empty 401 response.
+                          context.HandleResponse();
+                          context.Response.StatusCode =
+                              StatusCodes.Status401Unauthorized;
+                          context.Response.ContentType = "application/json";
+                          var response = GetAuthResponse(
+                            IsDevelopment: env.IsDevelopment(),
+                            message: "Unauthorized. A valid access token is required.",
+                            path: context.Request.Path.Value ?? "",
+                            statusCode: StatusCodes.Status401Unauthorized
+                          );
+                          await context.Response.WriteAsync(
+                              JsonSerializer.Serialize(response, GlobalExceptionHandling.jsonOptions)
+                          );
+                      },
+
+                      OnForbidden = async context =>
+                      {
+                          context.Response.StatusCode =
+                              StatusCodes.Status403Forbidden;
+                          context.Response.ContentType = "application/json";
+                          var response = GetAuthResponse(
+                            IsDevelopment: env.IsDevelopment(),
+                            message: "You do not have permission to access this resource.",
+                            path: context.Request.Path.Value ?? "",
+                            statusCode: StatusCodes.Status403Forbidden
+                          );
+                          await context.Response.WriteAsync(
+                              JsonSerializer.Serialize(response)
+                          );
+                      }
+                  };
               }
           );
+    }
+    public static BaseApiResponse GetAuthResponse(bool IsDevelopment, string message, string path, int statusCode)
+    {
+        return IsDevelopment
+         ?
+         new DevelopmentExceptionResponse
+         {
+             StatusCode = statusCode,
+             Message = message,
+             Status = false,
+             StackTrace = "",
+             InnerException = "",
+             InnerStackTrace = "",
+             Path = path,
+         }
+
+         : new ProductionExceptionResponse
+         {
+             StatusCode = statusCode,
+             Message = message,
+             Status = false,
+             Path = path,
+         };
     }
 }

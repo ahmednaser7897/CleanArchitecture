@@ -12,7 +12,7 @@ public class AuthController(IMediator Mediator) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequestDto dto)
     {
-        var courses = await Mediator.Send(new LoginQuery(dto));
-        return Ok(courses);
+        var result = await Mediator.Send(new LoginQuery(dto));
+        return Ok(result);
     }
 }
