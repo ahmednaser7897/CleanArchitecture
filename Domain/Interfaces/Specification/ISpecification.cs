@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Domain.Entities;
+using Domain.Abstraction;
 using Domain.Specification;
 
 namespace Domain.Interfaces.Specification;

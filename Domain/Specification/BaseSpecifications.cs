@@ -1,14 +1,14 @@
 using System.Linq.Expressions;
 using Domain.Abstraction;
 using Domain.AppConstants;
-using Domain.Entities;
 using Domain.Interfaces.Specification;
-using Domain.Specification;
+
+
 namespace Domain.Specification;
 
 public abstract class BaseSpecifications<TEntity, TKey>
 : ISpecification<TEntity, TKey>
-where TEntity : class, IEntity<TKey>
+where TEntity : IEntity<TKey>
 {
 
     protected BaseSpecifications()

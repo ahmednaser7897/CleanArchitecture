@@ -1,9 +1,6 @@
 using Application.DTOs.Options;
 using Application.DTOs.Response;
-using Domain.AppConstants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Middlewares;
 using System.Text.Json;

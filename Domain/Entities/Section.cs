@@ -1,9 +1,9 @@
-﻿
+﻿using Domain.Abstraction;
+
 namespace Domain.Entities;
 
 public class Section : IEntity<int>
 {
-    public int Id { get; set; }
     public required string Name { get; set; } = null!;
 
     // where section "must" has a course (Required)

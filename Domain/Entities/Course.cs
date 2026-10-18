@@ -1,8 +1,9 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Abstraction;
+
+namespace Domain.Entities;
 
 public class Course : IEntity<int>
 {
-    public int Id { get; set; }
     public required string Name { get; set; }
     public required decimal Price { get; set; }
 

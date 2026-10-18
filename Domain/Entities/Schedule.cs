@@ -1,9 +1,9 @@
+using Domain.Abstraction;
 using Domain.Enums;
 namespace Domain.Entities;
 
 public class Schedule : IEntity<int>
 {
-    public int Id { get; set; }
     public ScheduleEnum Title { get; set; }
     public bool SUN { get; set; }
     public bool MON { get; set; }

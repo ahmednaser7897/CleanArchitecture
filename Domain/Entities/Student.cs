@@ -1,8 +1,9 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Abstraction;
+
+namespace Domain.Entities;
 
 public class Student : IEntity<int>
 {
-    public int Id { get; set; }
     public required string Name { get; set; }
     //student and section has many to many relationship
     // because one student can enroll in many sections

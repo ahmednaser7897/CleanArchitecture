@@ -19,6 +19,7 @@ public static class Program
         builder.Host.AddSerilogConfiguration();
 
         var app = builder.Build();
+        app.UseSerilogRequestLogging();
         using (var scope = app.Services.CreateScope())
         {
             await IdentityRolesSeeder.SeedIdentityRolesAsync(scope.ServiceProvider);
@@ -37,7 +38,6 @@ public static class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-        app.UseSerilogRequestLogging();
         app.Run();
     }
 }

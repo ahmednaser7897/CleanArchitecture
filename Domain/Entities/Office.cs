@@ -1,8 +1,9 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Abstraction;
+
+namespace Domain.Entities;
 
 public class Office : IEntity<int>
 {
-    public int Id { get; set; }
     public required string Name { get; set; }
     public required string Location { get; set; }
     //instructor and office has one to one relationship

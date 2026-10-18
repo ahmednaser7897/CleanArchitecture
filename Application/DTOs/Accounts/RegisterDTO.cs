@@ -22,6 +22,6 @@ public class RegisterDTO
     public string? Bio { get; set; }
     public string? ImageUrl { get; set; }
     [Required]
-    public DateTime BirthDate { get; set; } = DateTime.Now;
+    public DateTime BirthDate { get; set; } = DateTime.UtcNow;
 }
 

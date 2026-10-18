@@ -8,7 +8,6 @@ namespace Domain.Entities;
 // and this join table will have the foreign keys of both tables
 public class Enrollment : IEntity<int>
 {
-    public int Id { get; set; }
     public required int SectionId { get; set; }
     public required int StudentId { get; set; }
 

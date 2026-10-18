@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Domain.Abstraction;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Specification;
@@ -10,7 +11,7 @@ namespace Infrastructure.Repositories;
 
 public class BaseRepository<TEntity, TKey>(AppDbContext context)
 : IBaseRepository<TEntity, TKey>
-where TEntity : class, IEntity<TKey>
+where TEntity : IEntity<TKey>
 {
     protected readonly AppDbContext _context = context;
 

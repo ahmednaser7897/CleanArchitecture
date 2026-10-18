@@ -38,11 +38,10 @@ public static class SwaggerExtentions
             });
 
             options.AddSecurityRequirement(document =>
-                new OpenApiSecurityRequirement
-                {
-                    [new OpenApiSecuritySchemeReference("Bearer", document)] =
-                        []
-                });
+            new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+            });
         });
     }
     public static void AddSwaggerWithBasicAuth(this IServiceCollection services)

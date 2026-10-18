@@ -1,3 +1,4 @@
+using Domain.Abstraction;
 using Domain.Entities;
 using Domain.Interfaces.Specification;
 using Domain.Specification;
@@ -13,7 +14,7 @@ public static class SpecificationEvaluator
         IQueryable<TEntity> inputQueryable,
         ISpecification<TEntity, TKey> specification
     )
-    where TEntity : class, IEntity<TKey>
+    where TEntity : IEntity<TKey>
     {
         var queryable = inputQueryable;
 

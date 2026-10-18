@@ -5,7 +5,6 @@ namespace Domain.Entities;
 // where office may has an instructor (Optional)
 public class Instructor : IEntity<int>
 {
-    public int Id { get; set; }
     public required string Name { get; set; }
     // instructor must has an office (Required)
     public required int OfficeId { get; set; }

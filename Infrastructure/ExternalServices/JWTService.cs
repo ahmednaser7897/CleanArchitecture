@@ -32,7 +32,7 @@ public class JwtService(IOptions<JwtOptions> jwtOptions) : IJwtService
             //claims: the claims that will be added to the token
             claims: climes,
             //expires: the expiration time of the token
-            expires: DateTime.Now.AddMinutes(_jwtOptions.LifeTime),
+            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.LifeTime),
             //signingCredentials: the credentials that will be used to sign the token
             signingCredentials: signingCredentials
         );
