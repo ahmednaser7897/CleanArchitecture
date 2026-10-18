@@ -4,7 +4,6 @@ namespace Domain.Entities;
 
 public class Student : IEntity<int>
 {
-    public required string Name { get; set; }
     //student and section has many to many relationship
     // because one student can enroll in many sections
     // and one section can have many students
@@ -16,7 +15,7 @@ public class Student : IEntity<int>
     public ApplicationUser User { get; set; } = null!;
     public override string ToString()
     {
-        return $"Name: {Name} | Id: {Id} ";
+        return $"Name: {User.Name} | Id: {Id} ";
     }
 
 }

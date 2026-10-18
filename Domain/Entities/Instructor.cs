@@ -5,7 +5,6 @@ namespace Domain.Entities;
 // where office may has an instructor (Optional)
 public class Instructor : IEntity<int>
 {
-    public required string Name { get; set; }
     // instructor must has an office (Required)
     public required int OfficeId { get; set; }
     public Office Office { get; set; } = null!;
@@ -20,6 +19,6 @@ public class Instructor : IEntity<int>
     public ApplicationUser User { get; set; } = null!;
     public override string ToString()
     {
-        return $"Instructor Name: {Name} | Id: {Id}";
+        return $"Instructor Name: {User.Name} | Id: {Id}";
     }
 }

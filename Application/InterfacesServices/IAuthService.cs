@@ -4,6 +4,6 @@ namespace Application.InterfacesServices;
 public interface IAuthService
 {
     Task<LoginResponseDto> Login(LoginRequestDto Dto);
-    //Task<RegisterDTO> RegisterAsync(RegisterDTO Dto);
+    Task<string?> Register(RegisterRequestDto Dto, string role);
     // Task<bool> Logout();
 }

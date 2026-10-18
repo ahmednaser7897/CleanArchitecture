@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.UseCases.Roles.Queries;
 using Application.UseCases.Roles.Commands;
 using Microsoft.AspNetCore.Authorization;
-using Infrastructure.Seeders;
+using Domain.Enums;
 
 namespace Presentation.Controllers;
 

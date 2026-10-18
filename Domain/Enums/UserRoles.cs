@@ -1,4 +1,4 @@
-namespace Infrastructure.Seeders;
+namespace Domain.Enums;
 
 public static class UserRoles
 {

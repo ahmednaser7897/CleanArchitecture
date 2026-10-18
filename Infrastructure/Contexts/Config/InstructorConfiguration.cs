@@ -11,10 +11,6 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).UseIdentityColumn(0, 1);
 
-        builder.Property(x => x.Name)
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(255).IsRequired();
-
         // add new relationship with offer
         // officeId is FK ,so it is optional
         builder.HasOne(x => x.Office)
@@ -22,6 +18,15 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         .HasForeignKey<Instructor>(x => x.OfficeId)
         //Instructor must have an office (Required)
         .IsRequired();
+
+        //Instructor and ApplicationUser has one to one relationship
+        //where instructor must has an ApplicationUser (Required)
+        //where ApplicationUser may has an instructor (Optional)
+        builder.HasOne(i => i.User)
+        .WithOne(u => u.Instructor)
+        .HasForeignKey<Instructor>(i => i.UserId)
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Restrict);
 
         builder.ToTable("Instructors");
     }

@@ -16,7 +16,7 @@ public class Enrollment : IEntity<int>
 
     public override string ToString()
     {
-        return $"Section: {Section.Name} , Student: {Student.Name}";
+        return $"Section: {Section.Name} , Student: {Student.User?.Name}";
     }
 }
 

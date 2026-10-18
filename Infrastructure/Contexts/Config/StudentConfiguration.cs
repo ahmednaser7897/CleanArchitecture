@@ -10,10 +10,14 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).UseIdentityColumn(0, 1);
-
-        builder.Property(x => x.Name)
-            .HasColumnType("VARCHAR")
-            .HasMaxLength(255).IsRequired();
+        //student and ApplicationUser has one to one relationship
+        // where student must has an ApplicationUser (Required)
+        // where ApplicationUser may has an student (Optional)
+        builder.HasOne(s => s.User)
+        .WithOne(u => u.Student)
+        .HasForeignKey<Student>(s => s.UserId)
+        .IsRequired()
+        .OnDelete(DeleteBehavior.Restrict);
 
         builder.ToTable("Students");
     }
