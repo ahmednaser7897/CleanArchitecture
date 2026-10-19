@@ -1,6 +1,6 @@
 using Application.DTOs.Response;
 using Domain.Entities;
-using Domain.Interfaces.Repositories;
+using Domain.Exceptions;
 using Domain.Interfaces.UnitOfWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,10 +10,11 @@ using Domain.Enums;
 
 namespace Application.UseCases.Auth.Queries;
 
-public class RegisterQuery(RegisterRequestDto dto, string role) : IRequest<BaseApiResponse<string>>
+public class RegisterQuery(RegisterRequestDto dto, string role, int? officeId = null) : IRequest<BaseApiResponse<string>>
 {
     public RegisterRequestDto Dto { get; set; } = dto;
     public string Role { get; set; } = role;
+    public int? OfficeId { get; set; } = officeId;
 }
 
 public class RegisterQueryHandler(IAuthService Repository, IUnitOfWork UnitOfWork, ILogger<RegisterQueryHandler> Logger) : IRequestHandler<RegisterQuery, BaseApiResponse<string>>
@@ -21,18 +22,37 @@ public class RegisterQueryHandler(IAuthService Repository, IUnitOfWork UnitOfWor
     public async Task<BaseApiResponse<string>> Handle(RegisterQuery request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Register in process");
-        var value = await Repository.Register(request.Dto, request.Role);
-        if (value != null)
+        await UnitOfWork.BeginTransactionAsync(cancellationToken);
+        try
         {
-            if (request.Role == UserRoles.Student)
+            var value = await Repository.Register(request.Dto, request.Role);
+            if (value != null)
             {
-                await CreateStudent(value);
+                if (request.Role == UserRoles.Student)
+                {
+                    await CreateStudent(value);
+                }
+                else if (request.Role == UserRoles.Instructor)
+                {
+                    if (request.OfficeId == null)
+                    {
+                        throw new CusttomExption("OfficeId is required for instructor");
+                    }
+                    await CreateInstructor(value, request.OfficeId.Value);
+                }
+                await UnitOfWork.CommitTransactionAsync(cancellationToken);
+
+                return BaseApiResponse<string>.Success("Registered successfully");
             }
-            return BaseApiResponse<string>.Success("Registered successfully");
+            else
+            {
+                return BaseApiResponse<string>.Fail("Failed to register");
+            }
         }
-        else
+        catch
         {
-            return BaseApiResponse<string>.Fail("Failed to register");
+            await UnitOfWork.RollbackTransactionAsync(cancellationToken);
+            throw;
         }
     }
     async Task CreateStudent(string userId)
@@ -43,6 +63,24 @@ public class RegisterQueryHandler(IAuthService Repository, IUnitOfWork UnitOfWor
         };
         await UnitOfWork.Students.Add(user);
         await UnitOfWork.Complete();
+    }
+    async Task CreateInstructor(string userId, int officeId)
+    {
+        var isExitsOffice = await UnitOfWork.Offices.GetById(officeId);
+        if (isExitsOffice != null)
+        {
+            var user = new Instructor
+            {
+                UserId = userId,
+                OfficeId = officeId,
+            };
+            await UnitOfWork.Instructors.Add(user);
+            await UnitOfWork.Complete();
+        }
+        else
+        {
+            throw new CusttomExption("Office is not found");
+        }
     }
 }
 

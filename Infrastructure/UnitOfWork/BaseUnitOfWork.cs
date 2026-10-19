@@ -1,13 +1,16 @@
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.UnitOfWork;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.UnitOfWork;
 
 public class BaseUnitOfWork : IUnitOfWork
 {
+    private IDbContextTransaction? _transaction;
     private readonly AppDbContext _context;
     public IBaseRepository<Course, int> Courses { get; private set; }
 
@@ -36,11 +39,60 @@ public class BaseUnitOfWork : IUnitOfWork
         Students = new BaseRepository<Student, int>(_context);
     }
 
-
-
     public Task<int> Complete()
     {
         return _context.SaveChangesAsync();
+    }
+    public async Task BeginTransactionAsync(
+        CancellationToken cancellationToken = default)
+    {
+        if (_transaction != null)
+        {
+
+            throw new CusttomExption(
+                "A transaction is already active.");
+        }
+
+
+        _transaction = await _context.Database
+            .BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(
+        CancellationToken cancellationToken = default)
+    {
+        if (_transaction == null)
+        {
+            throw new CusttomExption(
+                "No active transaction.");
+        }
+
+        try
+        {
+            await _transaction.CommitAsync(cancellationToken);
+        }
+        finally
+        {
+            await _transaction.DisposeAsync();
+            _transaction = null;
+        }
+    }
+
+    public async Task RollbackTransactionAsync(
+        CancellationToken cancellationToken = default)
+    {
+        if (_transaction == null)
+            return;
+
+        try
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+        }
+        finally
+        {
+            await _transaction.DisposeAsync();
+            _transaction = null;
+        }
     }
 
     public virtual void Dispose()
@@ -49,6 +101,7 @@ public class BaseUnitOfWork : IUnitOfWork
         GC.SuppressFinalize(this);
 
         // Dispose the DbContext
+        _transaction?.Dispose();
         _context.Dispose();
     }
 }

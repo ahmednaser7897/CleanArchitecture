@@ -1,6 +1,7 @@
 using Application.InterfacesServices;
 using Application.DTOs.Accounts;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Domain.Exceptions;
 using System.Security.Claims;
@@ -36,10 +37,10 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
             Name = Dto.Name,
             PhoneNumber = Dto.Phone,
             PhoneKey = Dto.PhoneKey,
-            Address = Dto.Address,
             ImageUrl = Dto.ImageUrl,
             BirthDate = Dto.BirthDate,
-            Bio = Dto.Bio
+            Bio = Dto.Bio,
+            Gender = Dto.Gender
         };
 
         //create the user in the database
@@ -99,7 +100,7 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
             Name = user.UserName ?? "",
             PhoneKey = user.PhoneKey,
             PhoneNumber = user.PhoneNumber ?? "",
-            Address = user.Address,
+            Gender = user.Gender ?? Gender.Male,
             ImageUrl = user.ImageUrl ?? "",
             BirthDate = user.BirthDate,
             Roles = roles,

@@ -18,7 +18,7 @@ public class AuthController(IMediator Mediator) : ControllerBase
         return Ok(result);
     }
     [HttpPost("registerAdmin")]
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Roles = UserRoles.Owner)]
     public async Task<IActionResult> RegisterAdmin(RegisterRequestDto dto)
     {
         var result = await Mediator.Send(new RegisterQuery(dto, UserRoles.Admin));
@@ -26,9 +26,9 @@ public class AuthController(IMediator Mediator) : ControllerBase
     }
     [Authorize(Roles = UserRoles.Admin)]
     [HttpPost("registerInstructor")]
-    public async Task<IActionResult> RegisterInstructor(RegisterRequestDto dto)
+    public async Task<IActionResult> RegisterInstructor(RegisterRequestDto dto, int? officeId = null)
     {
-        var result = await Mediator.Send(new RegisterQuery(dto, UserRoles.Instructor));
+        var result = await Mediator.Send(new RegisterQuery(dto, UserRoles.Instructor, officeId));
         return Ok(result);
     }
     [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]

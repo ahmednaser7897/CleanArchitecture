@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = UserRoles.Admin)]
+[Authorize(Roles = UserRoles.Owner + "," + UserRoles.Admin)]
 public class RolesController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]

@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
+using Infrastructure.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,69 +13,100 @@ public static class IdentityRolesSeeder
         IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
-        var roleManager = scope.ServiceProvider
-            .GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = scope.ServiceProvider
-            .GetRequiredService<UserManager<ApplicationUser>>();
-        // 1. Seed roles only if they don't exist
-        if (!roleManager.Roles.Any())
+
+        var services = scope.ServiceProvider;
+
+        var dbContext = services.GetRequiredService<AppDbContext>();
+
+        var roleManager =
+            services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        var userManager =
+            services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        await using var transaction =
+            await dbContext.Database.BeginTransactionAsync();
+
+        try
         {
+            if (roleManager.Roles.Any())
+                return;
+            // 1. Create roles if they don't exist
             foreach (var role in UserRoles.Roles)
             {
-                if (!await roleManager.RoleExistsAsync(role))
+                if (await roleManager.RoleExistsAsync(role))
+                    continue;
+
+                var result = await roleManager.CreateAsync(
+                    new IdentityRole(role));
+
+                if (!result.Succeeded)
                 {
-                    var result = await roleManager.CreateAsync(
-                        new IdentityRole(role));
-                    if (!result.Succeeded)
-                    {
-                        var errors = string.Join(", ",
-                            result.Errors.Select(e => e.Description));
-                        throw new CusttomExption(
-                            $"Failed to create role '{role}': {errors}");
-                    }
+                    var errors = string.Join(", ",
+                        result.Errors.Select(e => e.Description));
+
+                    throw new CusttomExption(
+                        $"Failed to create role '{role}': {errors}");
                 }
             }
-            // 2. Create the admin only if it doesn't exist
-            const string adminEmail = "admin@test.com";
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-            if (adminUser == null)
+
+            // 2. Create the owner if it doesn't exist
+            const string email = "owner@test.com";
+
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user == null)
             {
-                adminUser = new ApplicationUser
+                user = new ApplicationUser
                 {
-                    Name = "Super Admin",
-                    Bio = "I am the best developer in the world",
+                    Name = "Owner",
+                    Bio = "I am the owner of the platform",
                     PhoneKey = "+20",
                     PhoneNumber = "1121362555",
-                    UserName = adminEmail,
-                    Email = adminEmail,
+                    UserName = email,
+                    Email = email,
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,
-                    Address = "Cairo",
-                    BirthDate = new DateTime(2001, 08, 17),
+                    Gender = Gender.Male,
+                    BirthDate = new DateTime(2001, 08, 17)
                 };
+
                 var createResult = await userManager.CreateAsync(
-                    adminUser, "Admin@123");
+                    user, "Owner@123");
+
                 if (!createResult.Succeeded)
                 {
                     var errors = string.Join(", ",
                         createResult.Errors.Select(e => e.Description));
+
                     throw new CusttomExption(
-                        $"Failed to create admin: {errors}");
+                        $"Failed to create Owner: {errors}");
                 }
             }
-            // 3. Assign the Admin role only if it isn't already assigned
-            if (!await userManager.IsInRoleAsync(adminUser, UserRoles.Admin))
+
+            // 3. Assign the Owner role if it isn't assigned
+            if (!await userManager.IsInRoleAsync(user, UserRoles.Owner))
             {
                 var roleResult = await userManager.AddToRoleAsync(
-                    adminUser, UserRoles.Admin);
+                    user, UserRoles.Owner);
+
                 if (!roleResult.Succeeded)
                 {
                     var errors = string.Join(", ",
                         roleResult.Errors.Select(e => e.Description));
+
                     throw new CusttomExption(
-                        $"Failed to assign Admin role: {errors}");
+                        $"Failed to assign Owner role: {errors}");
                 }
             }
+
+            // 4. Commit only after every operation succeeds
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
         }
     }
 }

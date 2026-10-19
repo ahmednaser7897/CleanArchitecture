@@ -1,21 +1,25 @@
 using Application.DTOs.Courses;
 using Application.UseCases.Courses.Commands;
 using Application.UseCases.Courses.Queries;
+using Domain.Enums;
 using Domain.Specification.Params;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
 public class CourseController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Get([FromQuery] PaginationParams paginationParams)
     {
-        var courses = await Mediator.Send(new GetAllCoursesQuery(paginationParams));
-        return Ok(courses);
+        var models = await Mediator.Send(new GetAllCoursesQuery(paginationParams));
+        return Ok(models);
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 
 namespace Application.DTOs.Accounts;
 
@@ -10,9 +11,6 @@ public class RegisterRequestDto
     public required string Email { get; set; }
     [Required, DataType(DataType.Password)]
     public required string Password { get; set; }
-
-    [Required]
-    public required string Address { get; set; }
     [Required, DataType(DataType.PhoneNumber)]
     public required string Phone { get; set; }
     [Required]
@@ -22,5 +20,7 @@ public class RegisterRequestDto
     public string? ImageUrl { get; set; }
     [Required, DataType(DataType.Date)]
     public DateTime BirthDate { get; set; } = DateTime.UtcNow;
+    [Required]
+    public required Gender Gender { get; set; }
 }
 
