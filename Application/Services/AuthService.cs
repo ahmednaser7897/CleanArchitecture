@@ -4,7 +4,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Domain.Exceptions;
-using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
@@ -28,7 +27,6 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
         {
             throw new CusttomExption("Phone number already exists");
         }
-
         //create a new user
         user = new ApplicationUser
         {
@@ -75,22 +73,10 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
             throw new CusttomExption("Invalid user name or password");
         }
 
-        //Generate a Claims
-        var climes = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new (ClaimTypes.Email, user.Email ?? ""),
-                new (ClaimTypes.Name, user.UserName ?? "")
-            };
-        //get user roles and add it to claims
+        //get user roles
         var roles = await _userManager.GetRolesAsync(user);
-        foreach (var role in roles)
-        {
-            climes.Add(new Claim(ClaimTypes.Role, role));
-        }
-
         //Generate a Token
-        var tokenResponse = await _jwtService.GenerateJwtToken(climes);
+        var tokenResponse = await _jwtService.GenerateJwtToken(user);
 
         return new LoginResponseDto
         {
@@ -106,5 +92,16 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
             Roles = roles,
             TokenResponse = tokenResponse
         };
+    }
+
+    public async Task<TokenResponseDto> ReFreshToken(string refreshToken)
+    {
+        var value = await _jwtService.ReFreshToken(refreshToken);
+        return value;
+    }
+    public async Task<bool> ReVokeToken(string refreshToken)
+    {
+        var value = await _jwtService.ReVokeToken(refreshToken);
+        return value;
     }
 }

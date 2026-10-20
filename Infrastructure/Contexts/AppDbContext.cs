@@ -13,6 +13,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>//DbContext
     public DbSet<Schedule> Schedules { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
+    //public DbSet<RefreshToken> RefreshTokens { get; set; }
     public AppDbContext() : base()
     {
         ApplicationUser user = new();

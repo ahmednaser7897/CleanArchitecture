@@ -12,6 +12,7 @@ public interface IUnitOfWork : IDisposable
     public IBaseRepository<Schedule, int> Schedules { get; }
     public IBaseRepository<Section, int> Sections { get; }
     public IBaseRepository<Student, int> Students { get; }
+    public IBaseRepository<RefreshToken, int> RefreshTokens { get; }
     Task BeginTransactionAsync(
        CancellationToken cancellationToken = default);
 

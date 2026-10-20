@@ -59,11 +59,12 @@ public static class JWTExtentions
                       //this option is used to validate the lifetime
                       ValidateLifetime = true,
                       //this option is used to set the lifetime
-                      ClockSkew = TimeSpan.FromMinutes(jwtOptions.LifeTime),
+                      ClockSkew = TimeSpan.Zero,
                       //this option is used to validate the issuer signing key
                       ValidateIssuerSigningKey = true,
                       //this option is used to set the issuer signing key
-                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+
                   };
                   // Keep your existing TokenValidationParameters here.
                   options.Events = new JwtBearerEvents

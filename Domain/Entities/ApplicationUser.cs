@@ -1,4 +1,5 @@
 
+using Domain.Entities;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,4 +15,5 @@ public class ApplicationUser : IdentityUser
     public Gender? Gender { get; set; }
     public Student? Student { get; set; }
     public Instructor? Instructor { get; set; }
+    public List<RefreshToken> RefreshTokens { get; set; } = [];
 }

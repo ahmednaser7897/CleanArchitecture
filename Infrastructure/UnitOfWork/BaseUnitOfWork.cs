@@ -25,6 +25,7 @@ public class BaseUnitOfWork : IUnitOfWork
     public IBaseRepository<Section, int> Sections { get; private set; }
 
     public IBaseRepository<Student, int> Students { get; private set; }
+    public IBaseRepository<RefreshToken, int> RefreshTokens { get; private set; }
 
 
     public BaseUnitOfWork(AppDbContext context)
@@ -37,6 +38,7 @@ public class BaseUnitOfWork : IUnitOfWork
         Schedules = new BaseRepository<Schedule, int>(_context);
         Sections = new BaseRepository<Section, int>(_context);
         Students = new BaseRepository<Student, int>(_context);
+        RefreshTokens = new BaseRepository<RefreshToken, int>(_context);
     }
 
     public Task<int> Complete()
