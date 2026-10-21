@@ -22,6 +22,7 @@ public class CourseController(IMediator Mediator) : ControllerBase
         return Ok(models);
     }
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await Mediator.Send(new GetCourseByIdQuery(id));
