@@ -19,15 +19,14 @@ public class JwtService(IOptions<JwtOptions> jwtOptions, UserManager<Application
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
-
     public async Task<TokenResponseDto> GenerateJwtToken(ApplicationUser user)
     {
         //Generate a Claims
         var climes = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new (ClaimTypes.Email, user.Email ?? ""),
-            new (ClaimTypes.Name, user.UserName ?? "")
+            new(ClaimTypes.Email, user.Email ?? ""),
+            new(ClaimTypes.Name, user.Name ?? "")
         };
         //get user roles and add it to claims
         var roles = await _userManager.GetRolesAsync(user);

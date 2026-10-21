@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Infrastructure.Authorization;
 using Infrastructure.Contexts;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,6 +20,8 @@ public static class IdentityExtentions
             options.Password.RequiredLength = 8;
             options.Password.RequireNonAlphanumeric = true;
         }
-        ).AddEntityFrameworkStores<AppDbContext>();
+        ).AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<AppDbContext>();
     }
 }
