@@ -26,7 +26,7 @@ public class OfficeDto
             Id = model.Id,
             Name = model.Name,
             Location = model.Location,
-            InstructorName = model.Instructor?.User.Name,
+            InstructorName = model.Instructor?.User?.Name,
             InstructorId = model.InstructorId,
         };
     }

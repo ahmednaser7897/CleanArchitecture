@@ -17,6 +17,9 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
 
         builder.Property(x => x.Price).IsRequired().HasPrecision(15, 2);
 
+        // Exclude soft-deleted courses from all queries by default.
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.ToTable("Courses");
     }
 

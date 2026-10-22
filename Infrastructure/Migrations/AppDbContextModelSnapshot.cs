@@ -152,11 +152,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Enrollment", b =>
                 {
-                    b.Property<int>("SectionId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
@@ -170,14 +170,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("DeletedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 0L);
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -185,9 +185,12 @@ namespace Infrastructure.Migrations
                     b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SectionId", "StudentId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("SectionId");
+
+                    b.HasIndex("StudentId", "SectionId")
+                        .IsUnique();
 
                     b.ToTable("Enrollments", (string)null);
                 });
@@ -422,7 +425,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 0L);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -482,7 +485,7 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 0L);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
@@ -650,6 +653,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SectionStudent", b =>
+                {
+                    b.Property<int>("SectionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SectionsId", "StudentsId");
+
+                    b.HasIndex("StudentsId");
+
+                    b.ToTable("SectionStudent");
+                });
+
             modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
                 {
                     b.OwnsMany("Domain.Entities.RefreshToken", "RefreshTokens", b1 =>
@@ -713,13 +731,13 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Student", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Section");
@@ -829,6 +847,21 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SectionStudent", b =>
+                {
+                    b.HasOne("Domain.Entities.Section", null)
+                        .WithMany()
+                        .HasForeignKey("SectionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

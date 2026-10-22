@@ -28,6 +28,9 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         .IsRequired()
         .OnDelete(DeleteBehavior.Restrict);
 
+        // Exclude soft-deleted courses from all queries by default.
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.ToTable("Instructors");
     }
 }

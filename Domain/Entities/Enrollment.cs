@@ -8,15 +8,15 @@ namespace Domain.Entities;
 // and this join table will have the foreign keys of both tables
 public class Enrollment : IEntity<int>
 {
-    public required int SectionId { get; set; }
-    public required int StudentId { get; set; }
-
-    public Section Section { get; set; } = null!;
+    public int StudentId { get; set; }
     public Student Student { get; set; } = null!;
+
+    public int SectionId { get; set; }
+    public Section Section { get; set; } = null!;
 
     public override string ToString()
     {
-        return $"Section: {Section.Name} , Student: {Student.User?.Name}";
+        return $"Section: {SectionId} , Student: {StudentId}";
     }
 }
 

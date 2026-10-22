@@ -15,6 +15,8 @@ public class OfficeConfiguration : IEntityTypeConfiguration<Office>
            .HasColumnType("VARCHAR")
            .HasMaxLength(255).IsRequired();
 
+        // Exclude soft-deleted courses from all queries by default.
+        builder.HasQueryFilter(x => !x.IsDeleted);
 
         builder.ToTable("Offices");
     }

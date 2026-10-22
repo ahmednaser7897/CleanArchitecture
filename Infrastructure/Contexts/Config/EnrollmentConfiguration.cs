@@ -1,21 +1,38 @@
+
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Contexts.Config;
 
-public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
+public class EnrollmentConfiguration
+    : IEntityTypeConfiguration<Enrollment>
 {
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
-        builder.Property(x => x.Id).UseIdentityColumn(0, 1);
+        builder.HasKey(x => x.Id);
 
-        // Composite Primary Key
-        // The combination SectionId + StudentId must be unique
-        builder.HasKey(x => new { x.SectionId, x.StudentId });
+        builder.Property(x => x.Id)
+            .UseIdentityColumn(1, 1);
 
-        //GET THE TABLE NAME
+        // Prevent enrolling the same student in the same section twice.
+        builder.HasIndex(x => new { x.StudentId, x.SectionId })
+            .IsUnique();
+
+        builder.HasOne(x => x.Student)
+            .WithMany()
+            .HasForeignKey(x => x.StudentId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(x => x.Section)
+            .WithMany()
+            .HasForeignKey(x => x.SectionId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.ToTable("Enrollments");
     }
-
 }

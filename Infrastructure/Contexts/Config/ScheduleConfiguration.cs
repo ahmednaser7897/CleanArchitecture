@@ -32,6 +32,9 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
 
         builder.HasData(LoadSchedules());
 
+        // Exclude soft-deleted courses from all queries by default.
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.ToTable("Schedules");
     }
 

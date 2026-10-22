@@ -11,7 +11,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+//[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
 public class OfficeController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]

@@ -1,45 +1,53 @@
-using Domain.Entities;
-using Domain.Interfaces.UnitOfWork;
+using Application.DTOs.Schedules;
+using Application.UseCases.Schedules.Commands;
+using Application.UseCases.Schedules.Queries;
+using Domain.Enums;
+using Domain.Specification.Params;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
-//https://localhost:7156/swagger/index.html
-//https://localhost:7156/api/schedule
+
 [ApiController]
 [Route("api/[controller]")]
-public class ScheduleController(IUnitOfWork UnitOfWork) : ControllerBase
+[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+public class ScheduleController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [AllowAnonymous]
+    public async Task<IActionResult> Get([FromQuery] PaginationParams paginationParams)
     {
-        var schedules = await UnitOfWork.Schedules.GetAll();
-        return Ok(schedules);
+        var models = await Mediator.Send(new GetAllSchedulesQuery(paginationParams));
+        return Ok(models);
     }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    [AllowAnonymous]
+    public async Task<IActionResult> GetById(int id)
     {
-        var schedule = await UnitOfWork.Schedules.GetById(id);
-        return Ok(schedule);
+        var response = await Mediator.Send(new GetScheduleByIdQuery(id));
+        return Ok(response);
     }
+
     [HttpPost]
-    public async Task<IActionResult> Post(Schedule schedule)
+    public async Task<IActionResult> Post(ScheduleDto dto)
     {
-        await UnitOfWork.Schedules.Add(schedule);
-        await UnitOfWork.Complete();
-        return Ok(schedule);
+        var result = await Mediator.Send(new CreateScheduleCommand() { Dto = dto });
+        return Ok(result);
     }
-    [HttpPut]
-    public async Task<IActionResult> Put(Schedule schedule)
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put([FromRoute] int id, [FromBody] ScheduleDto dto)
     {
-        await UnitOfWork.Schedules.Update(schedule);
-        await UnitOfWork.Complete();
-        return Ok(schedule);
+        var result = await Mediator.Send(new UpdateScheduleCommand() { Dto = dto, Id = id });
+        return Ok(result);
     }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(int id)
     {
-        await UnitOfWork.Schedules.Remove(id);
-        await UnitOfWork.Complete();
-        return NoContent();
+        var result = await Mediator.Send(new DeleteScheduleCommand() { Id = id });
+        return Ok(result);
     }
 }

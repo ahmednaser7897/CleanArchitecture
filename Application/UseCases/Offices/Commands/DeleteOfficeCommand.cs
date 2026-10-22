@@ -16,9 +16,7 @@ public class DeleteOfficeCommandHandler(IUnitOfWork UnitOfWork, ILogger<DeleteOf
     public async Task<BaseApiResponse<bool>> Handle(DeleteOfficeCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Deleting {Office} With Id {Id}", nameof(Office), request.Id);
-        var model = await UnitOfWork.Offices.GetById(request.Id);
-        if (model == null)
-            throw new NotFoundException(nameof(Office), request.Id);
+        var model = await UnitOfWork.Offices.GetById(request.Id) ?? throw new NotFoundException(nameof(Office), request.Id);
         await UnitOfWork.Offices.Remove(model.Id);
         var state = await UnitOfWork.Complete();
         return state > 0 ? BaseApiResponse<bool>.Success(true, $"{nameof(Office)} deleted successfully") : BaseApiResponse<bool>.Fail("Failed to delete Office");
