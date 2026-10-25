@@ -3,16 +3,16 @@ using Application.DTOs.Response;
 using Application.InterfacesServices;
 using MediatR;
 using Microsoft.Extensions.Logging;
-namespace Application.UseCases.Auth.Queries;
+namespace Application.UseCases.Auth.Commands;
 
-public class ReVokeTokenQuery(string refreshToken) : IRequest<BaseApiResponse<bool>>
+public class ReVokeTokenCommand(string refreshToken) : IRequest<BaseApiResponse<bool>>
 {
     public string RefreshToken { get; set; } = refreshToken;
 }
 
-public class ReVokeTokenQueryHandler(IAuthService Repository, ILogger<ReVokeTokenQueryHandler> Logger) : IRequestHandler<ReVokeTokenQuery, BaseApiResponse<bool>>
+public class ReVokeTokenQueryHandler(IAuthService Repository, ILogger<ReVokeTokenQueryHandler> Logger) : IRequestHandler<ReVokeTokenCommand, BaseApiResponse<bool>>
 {
-    public async Task<BaseApiResponse<bool>> Handle(ReVokeTokenQuery request, CancellationToken cancellationToken)
+    public async Task<BaseApiResponse<bool>> Handle(ReVokeTokenCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("ReFreshToken in process");
         var value = await Repository.ReVokeToken(request.RefreshToken);

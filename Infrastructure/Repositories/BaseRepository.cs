@@ -60,13 +60,11 @@ where TEntity : IEntity<TKey>
     public async Task<List<TEntity>> GetAllWithSpec(
         ISpecification<TEntity, TKey> spec)
     {
-        var baseQuery = _context.Set<TEntity>()
-                                .AsNoTracking();
+        var baseQuery = _context.Set<TEntity>().AsNoTracking();
         return await SpecificationEvaluator.GenerateQuery<TEntity, TKey>(
             baseQuery,
             spec
         ).ToListAsync();
-
     }
 
     public async Task<TEntity?> GetByIdWithSpec(

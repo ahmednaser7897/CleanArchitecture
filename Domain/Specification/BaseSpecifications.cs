@@ -16,6 +16,7 @@ where TEntity : IEntity<TKey>
         //default spec = get all entities
         Criteria = _ => true;
     }
+
     //Applay where condition
     public Expression<Func<TEntity, bool>>? Criteria { get; private set; }
     public void AddCriteria(Expression<Func<TEntity, bool>> criteria)
@@ -29,13 +30,14 @@ where TEntity : IEntity<TKey>
     {
         Includes.Add(include);
     }
+
     //Applay order by
     public List<OrderExpression<TEntity>> OrderBy { get; } = [];
-
     public void AddOrderBy(Expression<Func<TEntity, object>> orderBy, bool isdesc = false)
     {
         OrderBy.Add(new OrderExpression<TEntity> { OrderBy = orderBy, IsDescending = isdesc });
     }
+
     //Apply pagination
     public int? Take { get; private set; }
     public int? Skip { get; private set; }
@@ -52,9 +54,7 @@ where TEntity : IEntity<TKey>
             Take = PageSize;
             IsPaginationEnabled = true;
         }
-
     }
-
 }
 
 

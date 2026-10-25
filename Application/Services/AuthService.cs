@@ -104,4 +104,12 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
         var value = await _jwtService.ReVokeToken(refreshToken);
         return value;
     }
+
+    public async Task<bool> DeleteUser(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId)
+        ?? throw new CusttomExption("User not found");
+        var result = await _userManager.DeleteAsync(user);
+        return result.Succeeded;
+    }
 }

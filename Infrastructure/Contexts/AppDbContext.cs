@@ -29,5 +29,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>//DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        // modelBuilder.Entity<ApplicationUser>()
+        // .HasQueryFilter(user => !user.IsDeleted);
     }
 }

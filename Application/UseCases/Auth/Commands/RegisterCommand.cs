@@ -8,18 +8,18 @@ using Application.DTOs.Accounts;
 using Application.InterfacesServices;
 using Domain.Enums;
 
-namespace Application.UseCases.Auth.Queries;
+namespace Application.UseCases.Auth.Commands;
 
-public class RegisterQuery(RegisterRequestDto dto, string role, int? officeId = null) : IRequest<BaseApiResponse<string>>
+public class RegisterCommand(RegisterRequestDto dto, string role, int? officeId = null) : IRequest<BaseApiResponse<string>>
 {
     public RegisterRequestDto Dto { get; set; } = dto;
     public string Role { get; set; } = role;
     public int? OfficeId { get; set; } = officeId;
 }
 
-public class RegisterQueryHandler(IAuthService Repository, IUnitOfWork UnitOfWork, ILogger<RegisterQueryHandler> Logger) : IRequestHandler<RegisterQuery, BaseApiResponse<string>>
+public class RegisterQueryHandler(IAuthService Repository, IUnitOfWork UnitOfWork, ILogger<RegisterQueryHandler> Logger) : IRequestHandler<RegisterCommand, BaseApiResponse<string>>
 {
-    public async Task<BaseApiResponse<string>> Handle(RegisterQuery request, CancellationToken cancellationToken)
+    public async Task<BaseApiResponse<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Register in process");
         await UnitOfWork.BeginTransactionAsync(cancellationToken);
