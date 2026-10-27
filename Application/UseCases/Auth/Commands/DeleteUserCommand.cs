@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using Domain.Interfaces.UnitOfWork;
+using Domain.Specification.Instructors;
 using Domain.Specification.Students;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ public class DeleteUserCommandHandler(IAuthService Repository, IUnitOfWork UnitO
             }
             else if (request.Role == nameof(UserRoles.Instructor))
             {
-                //await DeleteInstructor(user);
+                await DeleteInstructor(userId);
             }
             var value = await Repository.DeleteUser(request.UserId);
             await UnitOfWork.CommitTransactionAsync(cancellationToken);
@@ -60,16 +61,21 @@ public class DeleteUserCommandHandler(IAuthService Repository, IUnitOfWork UnitO
             throw new CusttomExption("Failed to delete student");
         }
     }
-    // public async Task DeleteInstructor(ApplicationUser user)
-    // {
-    //     var Instructor = await UnitOfWork.Instructors.GetById(user!.Instructor?.Id ?? -1) ?? throw new CusttomExption("Instructor not found");
-    //     var value = await UnitOfWork.Instructors.Remove(Instructor.Id);
-    //     if (!value)
-    //     {
-    //         throw new CusttomExption("Failed to delete instructor");
-    //     }
-    // }
-
+    public async Task DeleteInstructor(string UserId)
+    {
+        Logger.LogInformation("Delete Instructor");
+        var Instructors = await UnitOfWork.Instructors.GetAllWithSpec(new GetInstructorWuthUserSpec(UserId));
+        if (Instructors.Count == 0)
+        {
+            throw new CusttomExption("Instructor not found");
+        }
+        var Instructor = Instructors[0];
+        var value = await UnitOfWork.Instructors.Remove(Instructor.Id);
+        if (!value)
+        {
+            throw new CusttomExption("Failed to delete Instructor");
+        }
+    }
 }
 
 

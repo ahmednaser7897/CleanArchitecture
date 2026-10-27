@@ -11,7 +11,7 @@ public class ReFreshTokenCommand(string refreshToken) : IRequest<BaseApiResponse
     public string RefreshToken { get; set; } = refreshToken;
 }
 
-public class ReFreshTokenCommandHandler(IAuthService Repository, ILogger<ReFreshTokenCommandHandler> Logger) : IRequestHandler<ReFreshTokenCommand, BaseApiResponse<TokenResponseDto>>
+public class ReFreshTokenCommandHandler(IJwtService Repository, ILogger<ReFreshTokenCommandHandler> Logger) : IRequestHandler<ReFreshTokenCommand, BaseApiResponse<TokenResponseDto>>
 {
     public async Task<BaseApiResponse<TokenResponseDto>> Handle(ReFreshTokenCommand request, CancellationToken cancellationToken)
     {

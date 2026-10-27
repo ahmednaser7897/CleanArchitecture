@@ -93,18 +93,6 @@ public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<I
             TokenResponse = tokenResponse
         };
     }
-
-    public async Task<TokenResponseDto> ReFreshToken(string refreshToken)
-    {
-        var value = await _jwtService.ReFreshToken(refreshToken);
-        return value;
-    }
-    public async Task<bool> ReVokeToken(string refreshToken)
-    {
-        var value = await _jwtService.ReVokeToken(refreshToken);
-        return value;
-    }
-
     public async Task<bool> DeleteUser(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId)

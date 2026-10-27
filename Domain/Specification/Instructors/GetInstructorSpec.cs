@@ -17,3 +17,12 @@ public class GetInstructorSpec : BaseSpecifications<Instructor, int>
         if (paginationParams != null) AddPagination(paginationParams.PageIndex, paginationParams.PageSize);
     }
 }
+public class GetInstructorWuthUserSpec : BaseSpecifications<Instructor, int>
+{
+    public GetInstructorWuthUserSpec(string userId) : base()
+    {
+        AddCriteria(i => i.UserId == userId);
+        AddOrderBy(i => i.Id);
+        AddInclude(s => s.User);
+    }
+}

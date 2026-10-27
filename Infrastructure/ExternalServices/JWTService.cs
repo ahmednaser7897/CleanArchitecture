@@ -36,11 +36,9 @@ public class JwtService(IOptions<JwtOptions> jwtOptions, UserManager<Application
         }
         //Generate Token id clime(Jti) that will be changed each login
         climes.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
         //Generate signing Credentials
         var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var signingCredentials = new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256);
-
         //create the token
         var jwtSecurityToken = new JwtSecurityToken(
             //issuer: the server that create the token
@@ -95,9 +93,7 @@ public class JwtService(IOptions<JwtOptions> jwtOptions, UserManager<Application
         var user = await _userManager.Users.Include(t => t.RefreshTokens)
         .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken)) ??
         throw new CusttomExption("Invalid refresh token");
-
         var activeToken = user.RefreshTokens.Single(t => t.Token == refreshToken);
-
         if (!activeToken.IsActive)
         {
             throw new CusttomExption("Refresh token has expired");
@@ -106,7 +102,6 @@ public class JwtService(IOptions<JwtOptions> jwtOptions, UserManager<Application
         await _userManager.UpdateAsync(user);
         //Generate a Token
         return await GenerateJwtToken(user);
-
     }
 
     public async Task<bool> ReVokeToken(string refreshToken)

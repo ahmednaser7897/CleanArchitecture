@@ -10,7 +10,7 @@ public class ReVokeTokenCommand(string refreshToken) : IRequest<BaseApiResponse<
     public string RefreshToken { get; set; } = refreshToken;
 }
 
-public class ReVokeTokenQueryHandler(IAuthService Repository, ILogger<ReVokeTokenQueryHandler> Logger) : IRequestHandler<ReVokeTokenCommand, BaseApiResponse<bool>>
+public class ReVokeTokenQueryHandler(IJwtService Repository, ILogger<ReVokeTokenQueryHandler> Logger) : IRequestHandler<ReVokeTokenCommand, BaseApiResponse<bool>>
 {
     public async Task<BaseApiResponse<bool>> Handle(ReVokeTokenCommand request, CancellationToken cancellationToken)
     {

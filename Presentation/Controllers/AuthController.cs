@@ -32,7 +32,7 @@ public class AuthController(IMediator Mediator) : ControllerBase
         var result = await Mediator.Send(new RegisterCommand(dto, UserRoles.Instructor, officeId));
         return Ok(result);
     }
-    [Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPost("registerStudent")]
     public async Task<IActionResult> RegisterStudent(RegisterRequestDto dto)
     {
@@ -58,6 +58,14 @@ public class AuthController(IMediator Mediator) : ControllerBase
     public async Task<IActionResult> DeleteStudent([FromQuery] string userId)
     {
         var result = await Mediator.Send(new DeleteUserCommand(userId: userId, role: UserRoles.Student)
+       );
+        return Ok(result);
+    }
+    [Authorize(Roles = UserRoles.Admin)]
+    [HttpPost("deleteInstructor")]
+    public async Task<IActionResult> DeleteInstructor([FromQuery] string userId)
+    {
+        var result = await Mediator.Send(new DeleteUserCommand(userId: userId, role: UserRoles.Instructor)
        );
         return Ok(result);
     }
