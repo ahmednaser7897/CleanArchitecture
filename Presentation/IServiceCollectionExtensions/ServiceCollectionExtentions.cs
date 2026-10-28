@@ -2,13 +2,17 @@ using Application.DTOs.Options;
 using Application.InterfacesServices;
 using Application.Services;
 using Application.UseCases.Courses.Commands;
+using Domain.Enums;
 using Domain.Interfaces.UnitOfWork;
+using Infrastructure.Authorization.Requirements;
 using Infrastructure.Contexts;
 using Infrastructure.ExternalServices;
 using Infrastructure.Interceptors;
 using Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Filters;
+using System.Security.Claims;
 
 namespace Presentation.IServiceCollectionExtensions;
 
@@ -32,7 +36,7 @@ public static class ServiceCollectionExtentions
         services.AddAppCustomServises();
         services.AddScoped<AppInterceptor>();
         services.AddJWTAuthentication(configuration, env);
-
+        services.AddAuthorizationBasedPolicy();
     }
     private static void AddAppConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
@@ -94,6 +98,12 @@ public static class ServiceCollectionExtentions
                 policy.AllowAnyHeader();
             });
         });
+    }
+    private static void AddAuthorizationBasedPolicy(this IServiceCollection services)
+    {
+        services.AddAuthorizationBuilder().AddPolicy(PolicyNames.MustBeMale, builder => builder.RequireClaim(ClaimTypes.Gender, nameof(Gender.Male)));
+        services.AddAuthorizationBuilder().AddPolicy(PolicyNames.MustHaveImage, builder => builder.Requirements.Add(new MustHaveImagerequirements()));
+        services.AddScoped<IAuthorizationHandler, MustHaveImagerequirementsHandeler>();
     }
     private static void AddAppCustomServises(this IServiceCollection services)
     {

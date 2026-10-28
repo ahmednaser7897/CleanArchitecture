@@ -26,7 +26,8 @@ public class JwtService(IOptions<JwtOptions> jwtOptions, UserManager<Application
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, user.Email ?? ""),
-            new(ClaimTypes.Name, user.Name ?? "")
+            new(ClaimTypes.Name, user.Name ?? ""),
+            new(ClaimTypes.Gender, user.Gender.ToString() ?? "")
         };
         //get user roles and add it to claims
         var roles = await _userManager.GetRolesAsync(user);

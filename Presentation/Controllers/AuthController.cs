@@ -19,7 +19,7 @@ public class AuthController(IMediator Mediator) : ControllerBase
         return Ok(result);
     }
     [HttpPost("registerAdmin")]
-    [Authorize(Roles = UserRoles.Owner)]
+    [Authorize(Roles = UserRoles.Owner + "," + UserRoles.Admin)]
     public async Task<IActionResult> RegisterAdmin(RegisterRequestDto dto)
     {
         var result = await Mediator.Send(new RegisterCommand(dto, UserRoles.Admin));

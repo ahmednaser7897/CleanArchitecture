@@ -6,9 +6,7 @@ using Application.InterfacesServices;
 
 namespace Application.UseCases.Roles.Queries;
 
-public class GetAllRolesQuery() : IRequest<BaseApiResponse<List<RoleDto>>>
-{
-}
+public class GetAllRolesQuery : IRequest<BaseApiResponse<List<RoleDto>>>;
 
 public class GetAllRolesQueryHandler(IRoleService Repository, ILogger<GetAllRolesQueryHandler> Logger) : IRequestHandler<GetAllRolesQuery, BaseApiResponse<List<RoleDto>>>
 {

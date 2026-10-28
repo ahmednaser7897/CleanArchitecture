@@ -25,5 +25,4 @@ public class StudentController(IMediator Mediator) : ControllerBase
         var response = await Mediator.Send(new GetStudentByIdQuery(id));
         return Ok(response);
     }
-
 }
