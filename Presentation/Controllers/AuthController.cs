@@ -39,14 +39,12 @@ public class AuthController(IMediator Mediator) : ControllerBase
         var result = await Mediator.Send(new RegisterCommand(dto, UserRoles.Student));
         return Ok(result);
     }
-    [AllowAnonymous]
     [HttpPost("reFreshToken")]
     public async Task<IActionResult> ReFreshToken([FromBody] ReCreateTokenRequestDto dto)
     {
         var result = await Mediator.Send(new ReFreshTokenCommand(dto.RefreshToken));
         return Ok(result);
     }
-    [AllowAnonymous]
     [HttpPost("reVokeToken")]
     public async Task<IActionResult> RevokeToken([FromBody] ReCreateTokenRequestDto dto)
     {

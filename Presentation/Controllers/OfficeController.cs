@@ -11,17 +11,18 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+[Authorize(Roles = UserRoles.Admin)]
 public class OfficeController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> Get([FromQuery] PaginationParams paginationParams)
     {
         var models = await Mediator.Send(new GetAllOfficesQuery(paginationParams));
         return Ok(models);
     }
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await Mediator.Send(new GetOfficeByIdQuery(id));

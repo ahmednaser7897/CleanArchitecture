@@ -11,11 +11,11 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Owner)]
 public class ScheduleController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> Get([FromQuery] PaginationParams paginationParams)
     {
         var models = await Mediator.Send(new GetAllSchedulesQuery(paginationParams));
@@ -23,7 +23,7 @@ public class ScheduleController(IMediator Mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await Mediator.Send(new GetScheduleByIdQuery(id));

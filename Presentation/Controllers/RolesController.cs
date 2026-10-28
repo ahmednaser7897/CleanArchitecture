@@ -13,11 +13,13 @@ namespace Presentation.Controllers;
 public class RolesController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Get()
     {
         var Roles = await Mediator.Send(new GetAllRolesQuery());
         return Ok(Roles);
     }
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {

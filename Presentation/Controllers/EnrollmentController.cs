@@ -11,11 +11,11 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize(Roles = UserRoles.Admin + "," + UserRoles.Instructor)]
+[Authorize(Roles = UserRoles.Instructor)]
 public class EnrollmentController(IMediator Mediator) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> Get([FromQuery] PaginationParams paginationParams)
     {
         var models = await Mediator.Send(new GetAllEnrollmentsQuery(paginationParams));
@@ -23,7 +23,7 @@ public class EnrollmentController(IMediator Mediator) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await Mediator.Send(new GetEnrollmentByIdQuery(id));
@@ -36,13 +36,6 @@ public class EnrollmentController(IMediator Mediator) : ControllerBase
         var result = await Mediator.Send(new CreateEnrollmentCommand() { Dto = dto });
         return Ok(result);
     }
-
-    // [HttpPut("{id}")]
-    // public async Task<IActionResult> Put([FromRoute] int id, [FromBody] EnrollmentDto dto)
-    // {
-    //     var result = await Mediator.Send(new UpdateEnrollmentCommand() { Dto = dto, Id = id });
-    //     return Ok(result);
-    // }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remove(int id)
