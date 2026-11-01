@@ -10,6 +10,7 @@ public class GlobalExceptionHandling(RequestDelegate next, ILogger<GlobalExcepti
     private readonly ILogger<GlobalExceptionHandling> _logger = logger;
     private readonly IHostEnvironment _env = env;
 
+
     public async Task InvokeAsync(HttpContext context)
     {
         try
