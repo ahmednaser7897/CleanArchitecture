@@ -22,7 +22,7 @@ public static class Program
         app.UseSerilogRequestLogging();
         using (var scope = app.Services.CreateScope())
         {
-            await IdentityRolesSeeder.SeedIdentityRolesAsync(scope.ServiceProvider);
+            await IdentityRolesSeeder.SeedIdentityRolesAsync(scope.ServiceProvider, builder.Environment);
         }
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

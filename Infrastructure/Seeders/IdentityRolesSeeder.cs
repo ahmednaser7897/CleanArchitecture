@@ -2,15 +2,17 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using Infrastructure.Contexts;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.Seeders;
 
 public static class IdentityRolesSeeder
 {
     public static async Task SeedIdentityRolesAsync(
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, IWebHostEnvironment environment)
     {
         using var scope = serviceProvider.CreateScope();
 
@@ -51,15 +53,15 @@ public static class IdentityRolesSeeder
             }
 
             // 2. Create the owner if it doesn't exist
-            const string email = "owner@test.com";
-
+            string email = environment.IsDevelopment() ? "ahmednaser7897@gmail.com" : "ahmednaser7897@gmail.com";
+            string password = environment.IsDevelopment() ? "Owner@123" : "Owner@123";
             var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
                 user = new ApplicationUser
                 {
-                    Name = "Owner",
+                    Name = "Ahmed Naser",
                     Bio = "I am the owner of the platform",
                     PhoneKey = "+20",
                     PhoneNumber = "1121362555",
@@ -72,7 +74,7 @@ public static class IdentityRolesSeeder
                 };
 
                 var createResult = await userManager.CreateAsync(
-                    user, "Owner@123");
+                    user, password);
 
                 if (!createResult.Succeeded)
                 {
