@@ -1,5 +1,6 @@
 
 using Infrastructure.Seeders;
+using Microsoft.Extensions.Options;
 using Presentation.IServiceCollectionExtensions;
 using Presentation.Middlewares;
 using Serilog;
@@ -31,6 +32,10 @@ public static class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        #region Localization Middleware
+        var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+        app.UseRequestLocalization(options!.Value);
+        #endregion
         app.UseMiddleware<GlobalExceptionHandling>();
         app.UseCors(MyAppConstants.CorsAllowAllPolicy);
         app.UseHttpsRedirection();
